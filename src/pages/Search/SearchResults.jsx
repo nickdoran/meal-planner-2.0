@@ -1,34 +1,98 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Spinner from "../../components/Spinner.jsx";
 import Card from "../../components/Card.jsx";
 import { ChefHat } from "lucide-react";
 
 const SearchResults = ({ searchTerm }) => {
-  const [state, setState] = useState({ meals: [], loading: false });
-  const [showCards, setShowCards] = useState(false);
+  const [meals, setMeals] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [debouncedTerm, setDebouncedTerm] = useState("");
+  const debounceDelay = 500;
+  const debounceTimerRef = useRef(null);
 
-  const fetchSearchResults = async (query = "") => {
-    setState((prev) => ({ ...prev, loading: true }));
-    setShowCards(false);
-    try {
-      const response = await fetch(
-        `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`
-      );
-      const data = await response.json();
-      setTimeout(() => {
-        setState({ meals: data.meals || [], loading: false });
-        setShowCards(true);
-      }, 500);
-    } catch (error) {
-      console.error("We could not fetch the data", error);
-      setState((prev) => ({ ...prev, loading: false }));
-    }
-  };
-
+  // Debounce the incoming searchTerm into debouncedTerm
   useEffect(() => {
-    if (!searchTerm) return;
-    fetchSearchResults(searchTerm);
+    // Clear any existing debounce timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    if (!searchTerm) {
+      // If search term is empty, reset immediately
+      setDebouncedTerm("");
+      setMeals([]);
+      setLoading(false);
+      return;
+    }
+
+    // User has typed something: clear previous results and show loading immediately
+    setMeals([]);
+    setLoading(true);
+
+    // Schedule the debounced term update
+    debounceTimerRef.current = setTimeout(() => {
+      setDebouncedTerm(searchTerm);
+    }, debounceDelay);
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
   }, [searchTerm]);
+
+  // Fetch whenever debouncedTerm changes. Use AbortController and a local active flag
+  // so only the latest fetch updates component state.
+  useEffect(() => {
+    if (!debouncedTerm) {
+      // nothing to fetch
+      return;
+    }
+
+    let active = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const fetchSearchResults = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(
+            debouncedTerm
+          )}`,
+          { signal }
+        );
+
+        if (!active) return;
+
+        const data = await response.json();
+
+        if (!active) return;
+
+        setMeals(data.meals || []);
+      } catch (error) {
+        if (error.name === "AbortError") {
+          // request was aborted - ignore
+          return;
+        }
+        console.error("Error fetching search results:", error);
+        if (active) {
+          setMeals([]);
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchSearchResults();
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [debouncedTerm]);
 
   const renderContent = () => {
     if (!searchTerm) {
@@ -47,19 +111,20 @@ const SearchResults = ({ searchTerm }) => {
         </div>
       );
     }
-    if (state.loading) {
+
+    if (loading) {
       return <Spinner />;
     }
-    if (!state.meals || state.meals.length === 0) {
-      return <p className="text-center mt-6 ">No results found.</p>;
+
+    if (!meals || meals.length === 0) {
+      return <p className="text-center mt-6">No results found.</p>;
     }
+
     return (
       <div
-        className={`mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-7 transition-opacity duration-500 ${
-          showCards ? "opacity-100" : "opacity-0"
-        }`}
+        className={`mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-7 transition-opacity duration-500 opacity-100`}
       >
-        {state.meals.map((meal) => (
+        {meals.map((meal) => (
           <Card key={meal.idMeal} meal={meal} />
         ))}
       </div>
