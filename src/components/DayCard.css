@@ -1,0 +1,28 @@
+@import "tailwindcss";
+/* Text transitions */
+.add-text {
+  opacity: 1;
+  transition: opacity 300ms ease-out; /* Slow fade out on hover out */
+}
+
+.group:hover .add-text {
+  opacity: 0;
+  transition: opacity 150ms ease-in; /* Fast fade out on hover in */
+}
+
+/* Icon transitions */
+.add-icon {
+  opacity: 0;
+  transition: opacity 50ms ease-in; /* Fast fade out on hover out */
+  border-radius: 32px;
+  padding: 4px;
+  background-color: bg-[hsl(111, 100%, 99%)];
+  box-sizing: content-box;
+}
+
+.group:hover .add-icon {
+  opacity: 1;
+  @apply bg-emerald-100;
+  @apply text-emerald-300;
+  transition: all 400ms ease-out 200ms; /* Slow fade in with delay on hover in */
+}
