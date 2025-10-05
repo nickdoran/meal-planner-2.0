@@ -43,7 +43,6 @@ const DayCard = ({ weekday }) => {
           toDeleteIndices.push(i);
           i = (i + 1) % 7;
         }
-        // ! delete planner stuff
         toDeleteIndices.forEach((dayIndex) => {
           const dayName = dayNames[dayIndex];
           if (plannerData[dayName]) delete plannerData[dayName];
