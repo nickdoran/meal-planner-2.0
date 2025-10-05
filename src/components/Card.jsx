@@ -32,6 +32,12 @@ const Card = ({ meal }) => {
 
       navigate(`/planner`);
     } //TODO: add implementation for the case of no queries.
+    /* Flow of page when user presses the button, no queries
+    1. User presses button on a certain meal
+    2. User is sent to their planner to select a day of their chosing
+    3. 
+    
+    */
   };
 
   useEffect(() => {
