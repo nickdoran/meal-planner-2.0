@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lobster&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Alan+Sans:wght@300..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lobster&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
-
+@import "tailwindcss";
 @theme {
   --font-inter: "Inter", sans-serif;
   --font-roboto: "Roboto", sans-serif;
@@ -8,9 +8,18 @@
   --font-lobster: "Lobster", cursive;
   --font-alan: "Alan Sans", sans-serif;
 }
-@import "tailwindcss";
+
 /* Soft CSS Reset */
 @layer base {
+  :root {
+    --heading-h1-size: 3rem; /* text-6xl equivalent */
+    --heading-h2-size: 2.5rem; /* text-5xl equivalent */
+    --heading-h3-size: 1.875rem; /* text-3xl equivalent */
+    --heading-h4-size: 1.25rem; /* text-2xl equivalent */
+    --heading-h5-size: 1.125rem; /* text-lg equivalent */
+    --heading-h6-size: 1rem; /* text-base equivalent */
+  }
+
   h1,
   h2,
   h3,
@@ -22,8 +31,8 @@
     text-decoration: none;
     list-style: none;
     @apply text-slate-50;
-    font-weight: normal;
   }
+
   p,
   ul,
   ol,
@@ -36,10 +45,50 @@
     list-style: none;
     @apply text-slate-50;
   }
+
   body {
     margin: 0;
     line-height: 1.5;
     background-color: #335145;
-    color: ;
+  }
+  button {
+    cursor: pointer;
+  }
+}
+@layer components {
+  h1 {
+    font-size: var(--heading-h1-size);
+    font-weight: 500; /* font-bold */
+    color: rgb(248 250 252); /* text-slate-50 */
+  }
+
+  h2 {
+    font-size: var(--heading-h2-size);
+    font-weight: 400; /* font-semibold */
+    color: rgb(248 250 252); /* text-slate-50 */
+  }
+
+  h3 {
+    font-size: var(--heading-h3-size);
+    font-weight: 400; /* font-medium */
+    color: rgb(248 250 252); /* text-slate-50 */
+  }
+
+  h4 {
+    font-size: var(--heading-h4-size);
+    font-weight: 400; /* font-medium */
+    color: rgb(248 250 252); /* text-slate-50 */
+  }
+
+  h5 {
+    font-size: var(--heading-h5-size);
+    font-weight: 400; /* font-normal */
+    color: rgb(248 250 252); /* text-slate-50 */
+  }
+
+  h6 {
+    font-size: var(--heading-h6-size);
+    font-weight: 400; /* font-normal */
+    color: rgb(248 250 252); /* text-slate-50 */
   }
 }
