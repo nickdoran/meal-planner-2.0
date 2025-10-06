@@ -4,7 +4,7 @@ import { PlaneLanding } from "lucide-react";
 import { X, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 
-const DayCard = ({ weekday }) => {
+const DayCard = ({ weekday, dayName, isModal, handleModalButton }) => {
   const [planner, setPlanner] = useState({});
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const navigate = useNavigate();
@@ -26,17 +26,12 @@ const DayCard = ({ weekday }) => {
 
       if (dayDifference >= 7) {
         // If more than 7 days have passed, clear the entire planner
-        console.log(
-          "More than a week has passed. Clearing the entire planner."
-        );
+
         localStorage.removeItem("planner");
         setPlanner({});
       } else {
         const todaysDay = today.getDay();
         const lastUpdatedDay = lastUpdated.getDay();
-
-        console.log(lastUpdatedDay);
-        console.log("Today", todaysDay);
 
         let i = lastUpdatedDay;
         while (i != todaysDay) {
@@ -52,7 +47,6 @@ const DayCard = ({ weekday }) => {
         setPlanner(plannerData);
       }
     } else {
-      console.log("No lastUpdated found. Initializing planner.");
       setPlanner(plannerData);
     }
   }, []);
@@ -78,14 +72,12 @@ const DayCard = ({ weekday }) => {
     const curObj = planner[curDay]?.[section];
 
     if (curObj) {
-      console.log(curObj.strMeal);
-      console.log(curObj);
       return (
         <Link
-          className="bg-white hover:scale-[1.05] transition-all duration-400"
+          className="bg-white"
           to={`/mealdetails/${curObj.strMeal}`} // * need meal ID
         >
-          <div className="border-2 border-emerald-500 flex flex-col items-start rounded-2xl py-2.5 px-3 ">
+          <div className="border-2 border-emerald-500 flex flex-col items-start rounded-2xl py-2.5 px-3 hover:scale-[1.05] transition-all duration-400">
             <span className="text-xs px-2 py-1 rounded-2xl bg-emerald-200 text-emerald-700 mb-2.5">
               {section}
             </span>
@@ -121,7 +113,7 @@ const DayCard = ({ weekday }) => {
     } else {
       return (
         <button
-          className="group"
+          className="group w-full"
           onClick={() => {
             addMealHandle(dayNames[weekday.getDay()], section);
           }}
@@ -147,7 +139,7 @@ const DayCard = ({ weekday }) => {
       <h3 className="mb-3 text-black">{dayNames[weekday.getDay()]}</h3>
       <div className="flex flex-col gap-2">
         {["breakfast", "lunch", "dinner"].map((section) => {
-          return renderMealSection(section);
+          return <div key={section}>{renderMealSection(section)}</div>;
         })}
       </div>
     </div>

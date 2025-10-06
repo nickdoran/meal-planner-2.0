@@ -68,7 +68,7 @@ const Planner = () => {
         {weekdays.map((weekday, index) => {
           return (
             <li className="flex-1" key={index}>
-              <DayCard weekday={weekday}></DayCard>
+              <DayCard weekday={weekday} />
             </li>
           );
         })}
