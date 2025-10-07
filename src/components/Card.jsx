@@ -18,7 +18,6 @@ const Card = ({ meal }) => {
 
   const handleAdd = () => {
     if (day && section) {
-      console.log("wrong fire");
       const raw = localStorage.getItem("planner");
       const plannerData = raw ? JSON.parse(raw) : {};
 

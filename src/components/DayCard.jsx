@@ -2,9 +2,10 @@ import { Link, useNavigate } from "react-router-dom";
 import "./DayCard.css";
 import { PlaneLanding } from "lucide-react";
 import { X, Plus } from "lucide-react";
-import { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
-const DayCard = ({ weekday, dayName, isModal, handleModalButton }) => {
+const DayCard = ({ weekday, isModal = false, handleModalButton }) => {
+  const weekdayName = weekday.getDay();
   const [planner, setPlanner] = useState({});
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const navigate = useNavigate();
@@ -13,9 +14,7 @@ const DayCard = ({ weekday, dayName, isModal, handleModalButton }) => {
   useEffect(() => {
     const rawPlanner = localStorage.getItem("planner");
     const rawLastUpdated = localStorage.getItem("lastUpdated");
-
     const plannerData = rawPlanner ? JSON.parse(rawPlanner) : {}; // parsed planner
-
     const lastUpdated = rawLastUpdated ? new Date(rawLastUpdated) : null; // parsed date
     const today = new Date(); // today
     let toDeleteIndices = []; // to delete indices array
@@ -56,66 +55,123 @@ const DayCard = ({ weekday, dayName, isModal, handleModalButton }) => {
   };
 
   const handleDelete = (day, section) => {
-    setPlanner((prevPlanner) => {
-      const updatedPlanner = { ...prevPlanner };
-      if (updatedPlanner[day]) {
-        delete updatedPlanner[day][section];
-      }
-      // Update localStorage
-      localStorage.setItem("planner", JSON.stringify(updatedPlanner));
-      return updatedPlanner;
-    });
+    const raw = localStorage.getItem("planner");
+    const data = raw ? JSON.parse(raw) : null;
+    console.log("planner Before deletion", data);
+
+    if (!data || !data[day] || !data[day][section]) {
+      console.warn("Invalid data or section to delete:", { day, section });
+      return;
+    }
+
+    delete data[day][section];
+
+    if (Object.keys(data[day]).length === 0) {
+      delete data[day];
+    }
+
+    console.log("Updated planner after deletion", data);
+    localStorage.setItem("planner", JSON.stringify(data));
+    setPlanner(data);
   };
 
   const renderMealSection = (section) => {
-    const curDay = dayNames[weekday.getDay()];
+    const curDay = dayNames[weekdayName];
     const curObj = planner[curDay]?.[section];
 
     if (curObj) {
-      return (
-        <Link
-          className="bg-white"
-          to={`/mealdetails/${curObj.strMeal}`} // * need meal ID
-        >
-          <div className="border-2 border-emerald-500 flex flex-col items-start rounded-2xl py-2.5 px-3 hover:scale-[1.05] transition-all duration-400">
-            <span className="text-xs px-2 py-1 rounded-2xl bg-emerald-200 text-emerald-700 mb-2.5">
-              {section}
-            </span>
-            <img
-              className="h-16 w-full object-cover rounded-md mb-4"
-              src={curObj.strMealThumb}
-              alt={`Image of ${curObj.strMeal}`}
-            />
-            <div className="flex justify-between items-end w-full">
-              <div>
-                <h6 className="text-black font-semibold">{curObj.strMeal}</h6>
-                <p className="text-gray-300 text-xs">
-                  {curObj.strArea} · {curObj.strCategory}
-                </p>
+      if (!isModal) {
+        console.log("bad run");
+        return (
+          <Link
+            className="bg-white"
+            to={`/mealdetails/${curObj.strMeal}`} // * need meal ID
+          >
+            <div className="border-2 border-emerald-500 flex flex-col items-start rounded-2xl py-2.5 px-3 hover:scale-[1.05] transition-all duration-400">
+              <span className="text-xs px-2 py-1 rounded-2xl bg-emerald-200 text-emerald-700 mb-2.5">
+                {section}
+              </span>
+              <img
+                className="h-16 w-full object-cover rounded-md mb-4"
+                src={curObj.strMealThumb}
+                alt={`Image of ${curObj.strMeal}`}
+              />
+              <div className="flex justify-between items-end w-full">
+                <div>
+                  <h6 className="text-black font-semibold">{curObj.strMeal}</h6>
+                  <p className="text-gray-300 text-xs">
+                    {curObj.strArea} · {curObj.strCategory}
+                  </p>
+                </div>
+                <button
+                  className="text-black"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevents the click from bubbling up to the Link
+                    e.preventDefault();
+                    console.log("deleting");
+                    handleDelete(curDay, section);
+                  }}
+                >
+                  <X
+                    size={20}
+                    className="text-gray-400 transition-color duration-200 p-1.5 rounded-2xl box-content   bg-[hsl(111,100%,99%)] hover:bg-red-100 hover:text-red-400"
+                  />
+                </button>
               </div>
-              <button
-                className="text-black"
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevents the click from bubbling up to the Link
-                  e.preventDefault();
-                  handleDelete(curDay, section);
-                }}
-              >
-                <X
-                  size={20}
-                  className="text-gray-400 transition-color duration-200 p-1.5 rounded-2xl box-content   bg-[hsl(111,100%,99%)] hover:bg-red-100 hover:text-red-400"
-                />
-              </button>
+            </div>
+          </Link>
+        );
+      } else {
+        return (
+          <div
+            className="bg-white"
+            to={`/mealdetails/${curObj.strMeal}`} // * need meal ID
+          >
+            <div className="border-2 border-emerald-500 flex flex-col items-start rounded-2xl py-2.5 px-3 hover:scale-[1.05] transition-all duration-400">
+              <span className="text-xs px-2 py-1 rounded-2xl bg-emerald-200 text-emerald-700 mb-2.5">
+                {section}
+              </span>
+              <img
+                className="h-16 w-full object-cover rounded-md mb-4"
+                src={curObj.strMealThumb}
+                alt={`Image of ${curObj.strMeal}`}
+              />
+              <div className="flex justify-between items-end w-full">
+                <div>
+                  <h6 className="text-black font-semibold">{curObj.strMeal}</h6>
+                  <p className="text-gray-300 text-xs">
+                    {curObj.strArea} · {curObj.strCategory}
+                  </p>
+                </div>
+                <button
+                  className="text-black"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevents the click from bubbling up to the Link
+                    e.preventDefault();
+                    console.log("deleting");
+                    handleDelete(curDay, section);
+                  }}
+                >
+                  <X
+                    size={20}
+                    className="text-gray-400 transition-color duration-200 p-1.5 rounded-2xl box-content   bg-[hsl(111,100%,99%)] hover:bg-red-100 hover:text-red-400"
+                  />
+                </button>
+              </div>
             </div>
           </div>
-        </Link>
-      );
+        );
+      }
     } else {
       return (
         <button
           className="group w-full"
           onClick={() => {
-            addMealHandle(dayNames[weekday.getDay()], section);
+            if (isModal) {
+              handleModalButton(curDay, section);
+            } else {
+              addMealHandle(dayNames[weekdayName], section);
+            }
           }}
         >
           <div className="border-2 flex flex-col items-center justify-center border-gray-300 text-center py-3 px-8 rounded-2xl border-dashed hover:border-emerald-400 transition-all duration-400 hover:scale-[1.02] relative min-h-[60px]">
@@ -136,7 +192,7 @@ const DayCard = ({ weekday, dayName, isModal, handleModalButton }) => {
 
   return (
     <div className="flex flex-col p-4 bg-[hsl(111,100%,99%)] rounded-2xl shadow-2xl h-full">
-      <h3 className="mb-3 text-black">{dayNames[weekday.getDay()]}</h3>
+      <h3 className="mb-3 text-black">{dayNames[weekdayName]}</h3>
       <div className="flex flex-col gap-2">
         {["breakfast", "lunch", "dinner"].map((section) => {
           return <div key={section}>{renderMealSection(section)}</div>;
