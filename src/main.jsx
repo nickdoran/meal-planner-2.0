@@ -6,8 +6,4 @@ import App from "./App.jsx";
 import Spinner from "./components/Spinner.jsx";
 import Layout from "./components/Layout.jsx";
 
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+createRoot(document.getElementById("root")).render(<App />);

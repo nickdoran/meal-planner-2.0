@@ -1,5 +1,7 @@
 import DayCard from "../../components/DayCard.jsx";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useWeekdays } from "../../Context/useWeekdays.js";
+
 /* 
 TODO: Implement meal planning features here.
 Features will include:
@@ -45,22 +47,7 @@ TODO: - How do we make sure that the days of the week dont wrap around when the 
 */
 
 const Planner = () => {
-  const [weekdays, setWeekdays] = useState([]);
-
-  useEffect(() => {
-    const setDates = () => {
-      const today = new Date();
-      const dates = [];
-      for (let i = 0; i < 7; i++) {
-        const date = new Date(today);
-        date.setDate(today.getDate() + i);
-        dates.push(date);
-      }
-      setWeekdays(dates);
-    };
-
-    setDates();
-  }, []);
+  const { weekdays } = useWeekdays();
   return (
     <div className="flex-1 mt-6">
       <h1 className="text-center">Your Weekly Plan</h1>

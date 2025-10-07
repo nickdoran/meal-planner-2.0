@@ -4,17 +4,22 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import Layout from "./components/Layout.jsx";
 import Spinner from "./components/Spinner.jsx";
+import { WeekdaysProvider } from "./Context/WeekdaysContext.jsx";
 const Planner = lazy(() => import("./pages/Planner/Planner.jsx"));
 const Favorites = lazy(() => import("./pages/Favorites/Favorites.jsx"));
 const Search = lazy(() => import("./pages/Search/Search.jsx"));
 const MealDetails = lazy(() => import("./pages/MealDetails/MealDetails.jsx"));
 const NotFound = lazy(() => import("./pages/NotFound/NotFound.jsx"));
-
 const Home = lazy(() => import("./pages/Home/Home.jsx"));
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: (
+      <WeekdaysProvider>
+        <Layout />
+      </WeekdaysProvider>
+    ),
     children: [
       {
         path: "/",

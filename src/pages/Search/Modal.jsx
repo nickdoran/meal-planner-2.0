@@ -1,29 +1,56 @@
 import React from "react";
 import { PlaneLanding, X } from "lucide-react";
 import DayCard from "../../components/DayCard";
+import { useWeekdays } from "../../Context/useWeekdays.js";
 
 const Modal = ({ onClose, meal }) => {
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const { weekdays } = useWeekdays();
   const isModal = true;
-  const handleModalButton = () => {};
+  console.log(meal);
+
+  const handleModalButton = (day, section) => {
+    const raw = localStorage.getItem("planner");
+    const data = raw ? JSON.parse(raw) : {};
+    if (!data[day]) {
+      data[day] = {};
+    }
+    data[day][section] = {
+      idMeal: meal.idMeal,
+      strMeal: meal.strMeal,
+      strMealThumb: meal.strMealThumb,
+      strCategory: meal.strCategory,
+      strArea: meal.strArea,
+    };
+    localStorage.setItem("planner", JSON.stringify(data));
+    localStorage.setItem("lastUpdated", new Date().toISOString());
+    onClose();
+  };
 
   return (
-    <div className="fixed flex justify-center items-center w-screen h-screen bg-[hsla(0,0%,0%,.2)] top-0 left-0">
-      <div className="w-full bg-white">
-        <button onClick={onClose}>
+    <div className="fixed flex justify-center items-center w-screen h-screen p-16 bg-[#000000a2] top-0 left-0">
+      <div className="rounded-2xl p-6 bg-[#f4f3f3] shadow-lg pb-8">
+        <button className="w-full flex justify-end" onClick={onClose}>
           <X />
         </button>
-        {dayNames.map((dayName) => {
-          return (
-            <li key={dayName}>
-              <DayCard
-                dayName={dayName}
-                isModal={isModal}
-                handleModalButton={handleModalButton}
-              />
-            </li>
-          );
-        })}
+        <h2 className="leading-10 text-black text-center mb-3">
+          Add your meal to a day
+        </h2>
+        <p className="text-gray-500 text-center mb-6">
+          Select a meal section for the day you wish to add to. 🍔
+        </p>
+        <ul className="flex justify-center gap-4  px-9">
+          {weekdays.map((weekday) => {
+            return (
+              <li className="flex-1" key={weekday}>
+                <DayCard
+                  isModal={isModal}
+                  weekday={weekday}
+                  handleModalButton={handleModalButton}
+                />
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );
