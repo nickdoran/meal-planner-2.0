@@ -51,7 +51,7 @@ const Planner = () => {
   return (
     <div className="flex-1 mt-6">
       <h1 className="text-center">Your Weekly Plan</h1>
-      <ul className="flex justify-center items-stretch gap-4 mt-6 w-full px-2.5">
+      <ul className="flex justify-center items-stretch gap-4 mt-6 w-full px-2.5 mb-12">
         {weekdays.map((weekday, index) => {
           return (
             <li className="flex-1" key={index}>

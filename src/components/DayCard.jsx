@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./DayCard.css";
 import { PlaneLanding } from "lucide-react";
 import { X, Plus } from "lucide-react";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 const DayCard = ({ weekday, isModal = false, handleModalButton }) => {
   const weekdayName = weekday.getDay();
@@ -57,7 +57,6 @@ const DayCard = ({ weekday, isModal = false, handleModalButton }) => {
   const handleDelete = (day, section) => {
     const raw = localStorage.getItem("planner");
     const data = raw ? JSON.parse(raw) : null;
-    console.log("planner Before deletion", data);
 
     if (!data || !data[day] || !data[day][section]) {
       console.warn("Invalid data or section to delete:", { day, section });
@@ -70,7 +69,6 @@ const DayCard = ({ weekday, isModal = false, handleModalButton }) => {
       delete data[day];
     }
 
-    console.log("Updated planner after deletion", data);
     localStorage.setItem("planner", JSON.stringify(data));
     setPlanner(data);
   };
@@ -81,13 +79,12 @@ const DayCard = ({ weekday, isModal = false, handleModalButton }) => {
 
     if (curObj) {
       if (!isModal) {
-        console.log("bad run");
         return (
           <Link
-            className="bg-white"
+            className="bg-white "
             to={`/mealdetails/${curObj.strMeal}`} // * need meal ID
           >
-            <div className="border-2 border-emerald-500 flex flex-col items-start rounded-2xl py-2.5 px-3 hover:scale-[1.05] transition-all duration-400">
+            <div className=" border-2 border-emerald-500 flex flex-col items-start rounded-2xl py-2.5 px-3 hover:scale-[1.05] transition-all duration-400">
               <span className="text-xs px-2 py-1 rounded-2xl bg-emerald-200 text-emerald-700 mb-2.5">
                 {section}
               </span>
@@ -108,7 +105,7 @@ const DayCard = ({ weekday, isModal = false, handleModalButton }) => {
                   onClick={(e) => {
                     e.stopPropagation(); // Prevents the click from bubbling up to the Link
                     e.preventDefault();
-                    console.log("deleting");
+
                     handleDelete(curDay, section);
                   }}
                 >
@@ -148,7 +145,7 @@ const DayCard = ({ weekday, isModal = false, handleModalButton }) => {
                   onClick={(e) => {
                     e.stopPropagation(); // Prevents the click from bubbling up to the Link
                     e.preventDefault();
-                    console.log("deleting");
+
                     handleDelete(curDay, section);
                   }}
                 >
@@ -193,11 +190,12 @@ const DayCard = ({ weekday, isModal = false, handleModalButton }) => {
   return (
     <div className="flex flex-col p-4 bg-[hsl(111,100%,99%)] rounded-2xl shadow-2xl h-full">
       <h3 className="mb-3 text-black">{dayNames[weekdayName]}</h3>
-      <div className="flex flex-col gap-2">
+
+      <ul className="flex flex-col gap-2 h-full">
         {["breakfast", "lunch", "dinner"].map((section) => {
-          return <div key={section}>{renderMealSection(section)}</div>;
+          return <li key={section}>{renderMealSection(section)}</li>;
         })}
-      </div>
+      </ul>
     </div>
   );
 };
