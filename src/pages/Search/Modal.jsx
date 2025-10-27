@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PlaneLanding, X } from "lucide-react";
 import DayCard from "../../components/DayCard";
 import { useWeekdays } from "../../Context/useWeekdays.js";
 
 const Modal = ({ onClose, meal }) => {
   const { weekdays } = useWeekdays();
+  const [isVisable, setIsVisable] = useState(false);
   const isModal = true;
-  console.log(meal);
 
+  useEffect(() => {
+    setIsVisable(true);
+  }, []);
   const handleModalButton = (day, section) => {
     const raw = localStorage.getItem("planner");
     const data = raw ? JSON.parse(raw) : {};
@@ -27,7 +30,11 @@ const Modal = ({ onClose, meal }) => {
   };
 
   return (
-    <div className="fixed flex justify-center items-center w-screen h-screen p-16 bg-[#000000a2] top-0 left-0">
+    <div
+      className={`fixed flex justify-center items-center w-screen h-screen p-16 bg-[#000000a2] top-0 left-0 transistion-opacity duration-400 ${
+        isVisable ? "opacity-100" : "opacity-0"
+      }`}
+    >
       <div className="rounded-2xl p-6 bg-[#f4f3f3] shadow-lg pb-8">
         <button className="w-full flex justify-end" onClick={onClose}>
           <X />
