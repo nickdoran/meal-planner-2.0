@@ -46,34 +46,61 @@ const Card = ({ meal }) => {
         <>
             <Link
                 to={day ? "#" : `/mealdetails/${meal.idMeal}`}
-                className={`card-transition transform rounded-2xl shadow-lg flex flex-col justify-start items-start bg-transparent ${
+                className={`group card-transition rounded-3xl shadow-md hover:shadow-2xl overflow-hidden bg-white border border-gray-100 flex flex-col transition-all duration-300 ${
                     visible ? "opacity-100" : "opacity-0"
                 }`}
             >
-                <img
-                    src={meal.strMealThumb}
-                    alt={meal.strMeal}
-                    className="w-full rounded-t-2xl border-b-emerald-500 border-4 border-x-[335145] border-x-transparent border-t-transparent"
-                />
-                <div className="w-full bg-slate-100 rounded-b-2xl flex-1 flex flex-col justify-between">
-                    <div className=" flex w-full justify-between items-end px-4 pt-0.5 pb-4">
-                        <div>
-                            <h3 className="font-bold text-black">
-                                {meal.strMeal}
-                            </h3>
-                            <p className="text-sm text-gray-400">
-                                {meal.strCategory} · {meal.strArea}
-                            </p>
+                <div className="relative overflow-hidden">
+                    <img
+                        src={meal.strMealThumb}
+                        alt={meal.strMeal}
+                        className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute top-3 right-3 bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
+                        {meal.strCategory}
+                    </div>
+                </div>
+
+                <div className="flex-1 flex flex-col justify-between p-5 bg-gradient-to-br from-white to-gray-50">
+                    <div>
+                        <h3 className="font-bold text-xl text-gray-900 mb-2 line-clamp-2 group-hover:text-emerald-600 transition-colors duration-200">
+                            {meal.strMeal}
+                        </h3>
+                        <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+                            <span className="flex items-center gap-1">
+                                <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                    />
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                    />
+                                </svg>
+                                {meal.strArea}
+                            </span>
                         </div>
                     </div>
-                    <div className="flex w-full justify-between items-end px-3 pb-3 rounded-b-2xl">
+
+                    <div className="flex items-center justify-between gap-3 pt-4 border-t border-gray-200">
                         <button
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 handleAdd();
                             }}
-                            className="bg-emerald-900 text-white rounded-lg py-2 px-4 hover:bg-emerald-800 transition-color duration-200"
+                            className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white rounded-xl py-2.5 px-4 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
                         >
                             Add to Planner
                         </button>
@@ -82,7 +109,7 @@ const Card = ({ meal }) => {
                                 e.stopPropagation();
                                 e.preventDefault();
                             }}
-                            className="w-8 h-8 stroke-yellow-500 fill-none hover:fill-yellow-500 cursor-pointer"
+                            className="w-10 h-10 stroke-amber-400 fill-none hover:fill-amber-400 hover:scale-110 cursor-pointer transition-all duration-200"
                         />
                     </div>
                 </div>
