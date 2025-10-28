@@ -12,7 +12,7 @@ const MealDetails = lazy(() => import("./pages/MealDetails/MealDetails.jsx"));
 const NotFound = lazy(() => import("./pages/NotFound/NotFound.jsx"));
 const Home = lazy(() => import("./pages/Home/Home.jsx"));
 
-// I am testing commit contributions
+// I am testing commit contributions. test 2
 
 const router = createBrowserRouter([
     {
