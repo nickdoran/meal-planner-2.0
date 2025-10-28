@@ -12,72 +12,74 @@ const MealDetails = lazy(() => import("./pages/MealDetails/MealDetails.jsx"));
 const NotFound = lazy(() => import("./pages/NotFound/NotFound.jsx"));
 const Home = lazy(() => import("./pages/Home/Home.jsx"));
 
+// I am testing commit contributions
+
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <WeekdaysProvider>
-        <Layout />
-      </WeekdaysProvider>
-    ),
-    children: [
-      {
+    {
         path: "/",
         element: (
-          <Suspense fallback={<Spinner />}>
-            <Home />
-          </Suspense>
+            <WeekdaysProvider>
+                <Layout />
+            </WeekdaysProvider>
         ),
-      },
-      {
-        path: "/planner",
-        element: (
-          <Suspense fallback={<Spinner />}>
-            <Planner />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/favorites",
-        element: (
-          <Suspense fallback={<Spinner />}>
-            <Favorites />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/search",
-        element: (
-          <Suspense fallback={<Spinner />}>
-            <Search />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/mealdetails/:id",
-        element: (
-          <Suspense fallback={<Spinner />}>
-            <MealDetails />
-          </Suspense>
-        ),
-      },
-      {
-        path: "*",
-        element: (
-          <Suspense fallback={<Spinner />}>
-            <NotFound />
-          </Suspense>
-        ),
-      },
-    ],
-  },
+        children: [
+            {
+                path: "/",
+                element: (
+                    <Suspense fallback={<Spinner />}>
+                        <Home />
+                    </Suspense>
+                ),
+            },
+            {
+                path: "/planner",
+                element: (
+                    <Suspense fallback={<Spinner />}>
+                        <Planner />
+                    </Suspense>
+                ),
+            },
+            {
+                path: "/favorites",
+                element: (
+                    <Suspense fallback={<Spinner />}>
+                        <Favorites />
+                    </Suspense>
+                ),
+            },
+            {
+                path: "/search",
+                element: (
+                    <Suspense fallback={<Spinner />}>
+                        <Search />
+                    </Suspense>
+                ),
+            },
+            {
+                path: "/mealdetails/:id",
+                element: (
+                    <Suspense fallback={<Spinner />}>
+                        <MealDetails />
+                    </Suspense>
+                ),
+            },
+            {
+                path: "*",
+                element: (
+                    <Suspense fallback={<Spinner />}>
+                        <NotFound />
+                    </Suspense>
+                ),
+            },
+        ],
+    },
 ]);
 function App() {
-  return (
-    <>
-      <RouterProvider router={router} />
-    </>
-  );
+    return (
+        <>
+            <RouterProvider router={router} />
+        </>
+    );
 }
 
 export default App;
